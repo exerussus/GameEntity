@@ -1,0 +1,26 @@
+{
+  "name": "com.exerussus.gameentity",
+  "version": "1.0.2",
+  "displayName": "GameEntity",
+  "description": "Надстройка над 1EasyEcs с целью автоматизировать инициализацию стартера получая эффект 'выпустил и забыл'",
+  "unity": "2020.3",
+  "dependencies": {},
+  "keywords": [
+    "leoecslite",
+    "leoecs",
+    "ecs",
+    "performance",
+    "1extensions",
+    "1easyecs",
+    "gameentity",
+    "exerussus"
+  ],
+  "author": {
+    "name": "Exerussus",
+    "email": "solovyov.production@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/exerussus/GameEntity.git"
+  }
+}
