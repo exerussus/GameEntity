@@ -6,7 +6,7 @@ namespace Exerussus.GameEntity.Core
 {
     public class GameEntityPooler : IGroupPooler
     {
-        public void Initialize(EcsWorld world)
+        public virtual void Initialize(EcsWorld world)
         {
             GameEntity = new(world);
         }
