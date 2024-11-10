@@ -6,7 +6,12 @@ namespace Exerussus.GameEntity.Core
     {
         public struct GameEntity : IEcsComponent
         {
-            public GameEntityBootstrapper Value;
+            public IGameEntityBootstrapper Value;
+        }
+        
+        public struct UniqueId : IEcsComponent
+        {
+            public int Value;
         }
     }
 }

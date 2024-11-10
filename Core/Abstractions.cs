@@ -1,20 +1,26 @@
-﻿using Exerussus._1Attributes;
+﻿
+using System.Collections.Generic;
 using Leopotam.EcsLite;
 using UnityEngine;
 
 namespace Exerussus.GameEntity.Core
 {
-    public abstract class GameEntityBootstrapper : MonoBehaviour
+    public interface IGameEntityBootstrapper
     {
-        [ReadOnly] protected EcsPackedEntity _entityPack;
-        [ReadOnly] protected bool _isActivated;
-        public EcsPackedEntity EntityPack => _entityPack;
-        public bool Activated => _isActivated;
-        public bool IsQuitting { get; protected set; }
+        public EcsPackedEntity EntityPack { get; }
+        public GameObject GameObject { get; }
+        public bool Activated { get; }
+        public bool IsQuitting { get; }
+        public abstract EcsWorld World { get; }
+        public abstract GameEntityPooler Pooler { get; } 
+        public abstract List<IGameEntityComponent> Components { get; }
+        public abstract void Start();
+    }
 
-        protected void SetQuitting()
-        {
-            IsQuitting = true;
-        }
+    public interface IGameEntityComponent
+    {
+        public IGameEntityBootstrapper GameEntity { get; set; }
+        public abstract void InvokeOnDeactivate(int entity);
+        public abstract void InvokeOnActivate(int entity);
     }
 }

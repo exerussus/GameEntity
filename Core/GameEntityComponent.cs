@@ -1,16 +1,16 @@
-﻿using System;
+﻿
 using Leopotam.EcsLite;
 using UnityEngine;
 
 namespace Exerussus.GameEntity.Core
 {
-    [RequireComponent(typeof(GameEntityBootstrapper))]
-    public abstract class GameEntityComponent<T> : MonoBehaviour where T : GameEntityStarter
+    [RequireComponent(typeof(IGameEntityBootstrapper))]
+    public abstract class GameEntityComponent<T> : MonoBehaviour, IGameEntityComponent where T : GameEntityStarter
     {
-        [SerializeField, HideInInspector] public GameEntityBootstrapper<T> gameEntity;
-        public EcsPackedEntity EntityPack => gameEntity.EntityPack;
+        public IGameEntityBootstrapper GameEntity { get; set; }
+        public EcsPackedEntity EntityPack => GameEntity.EntityPack;
         public bool IsActivated { get; private set; }
-        public bool IsQuitting => gameEntity.IsQuitting;
+        public bool IsQuitting => GameEntity.IsQuitting;
         private T _core;
         public T Core
         {
@@ -25,22 +25,22 @@ namespace Exerussus.GameEntity.Core
         
         private void Start()
         {
-            if (gameEntity != null) return;
-            gameEntity = GetComponent<GameEntityBootstrapper<T>>();
-            if (gameEntity == null)
+            if (GameEntity != null) return;
+            GameEntity = GetComponent<GameEntityBootstrapper<T>>();
+            if (GameEntity == null)
             {
-                gameEntity = gameObject.AddComponent<GameEntityBootstrapper<T>>();
-                gameEntity.Start();
+                GameEntity = gameObject.AddComponent<GameEntityBootstrapper<T>>();
+                GameEntity.Start();
             }
             else
             {
-                if (!gameEntity.Activated)
+                if (!GameEntity.Activated)
                 {
-                    gameEntity.Start();
+                    GameEntity.Start();
                     return;
                 }
-                if (!gameEntity.EntityPack.Unpack(gameEntity.World, out var entity)) return;
-                gameEntity.Components.Add(this);
+                if (!GameEntity.EntityPack.Unpack(GameEntity.World, out var entity)) return;
+                GameEntity.Components.Add(this);
                 InvokeOnActivate(entity);
             }
         }
@@ -52,6 +52,7 @@ namespace Exerussus.GameEntity.Core
             OnActivate(entity);
             IsActivated = true;
         }
+
         public void InvokeOnDeactivate(int entity) 
         {
             if (!IsActivated) return;

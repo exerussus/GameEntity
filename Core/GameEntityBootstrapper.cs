@@ -6,13 +6,22 @@ using UnityEngine;
 
 namespace Exerussus.GameEntity.Core
 {
-    public abstract class GameEntityBootstrapper<T> : GameEntityBootstrapper where T : GameEntityStarter
+    public abstract class GameEntityBootstrapper<T> : MonoBehaviour, IGameEntityBootstrapper where T : GameEntityStarter
     {
-        [SerializeField, HideInInspector] private List<GameEntityComponent<T>> gameEntityComponent;
+        [ReadOnly] protected EcsPackedEntity _entityPack;
+        [ReadOnly] protected bool _isActivated;
+        [SerializeField, HideInInspector] private List<IGameEntityComponent> gameEntityComponent;
         
         private T _core;
         private bool _isStarterInitialized;
-        public List<GameEntityComponent<T>> Components => gameEntityComponent;
+        private bool _isQuitting;
+        public List<IGameEntityComponent> Components => gameEntityComponent;
+        public EcsPackedEntity EntityPack => _entityPack;
+        public GameObject GameObject => gameObject;
+        public bool Activated => _isActivated;
+        public bool IsQuitting { get; private set; }
+
+
         public EcsWorld World => Core.World;
         public GameEntityPooler Pooler => Core.Pooler;
 
@@ -30,12 +39,12 @@ namespace Exerussus.GameEntity.Core
         {
             if (_isActivated) return;
             if (!Application.isPlaying) return;
-            Application.quitting += SetQuitting;
-            gameEntityComponent = GetComponents<GameEntityComponent<T>>().ToList();
+            Application.quitting += (() => IsQuitting = true);
+            gameEntityComponent = GetComponents<IGameEntityComponent>().ToList();
             
             if (gameEntityComponent is not {Count: > 0})
             {
-                gameEntityComponent = new List<GameEntityComponent<T>>(GetComponents<GameEntityComponent<T>>());
+                gameEntityComponent = new List<IGameEntityComponent>(GetComponents<IGameEntityComponent>());
                 if (gameEntityComponent is not {Count: > 0}) return;
             }
             _entityPack = World.PackEntity(World.NewEntity());
@@ -45,7 +54,7 @@ namespace Exerussus.GameEntity.Core
             
             foreach (var entityComponent in gameEntityComponent)
             {
-                entityComponent.gameEntity = this;
+                entityComponent.GameEntity = this;
                 entityComponent.InvokeOnActivate(_entityPack.Id);
             }
             
