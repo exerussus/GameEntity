@@ -13,7 +13,7 @@ namespace Exerussus.GameEntity.Core
     {
         private Signal _signal;
         private GameEntityPooler _pooler;
-        protected override Signal Signal => _signal;
+        public override Signal Signal => _signal;
         public EcsWorld World => _world;
         public Signal SignalInstance => _signal;
         public GameEntityPooler Pooler => _pooler;
