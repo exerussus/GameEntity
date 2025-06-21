@@ -43,7 +43,7 @@ namespace Exerussus.GameEntity.Core
             return (T)Instance;
         }
 
-        protected override EcsGroup[] GetGroups()
+        protected override EcsGroup[] CreateGroups()
         {
             var custom = GetGroups(_world, GameShare);
             var core = new EcsGroup[]
